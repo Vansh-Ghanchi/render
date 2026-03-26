@@ -1,0 +1,227 @@
+<%- include('../include/_Shead') %>
+    <% const resultsData=Array.isArray(results) ? results : []; const latestResult=resultsData.length ?
+        resultsData[resultsData.length - 1] : {}; %>
+        <div class="flex-1">
+
+            <header class="flex justify-between items-center bg-white shadow p-4">
+                <button id="menuBtn" class="md:hidden text-2xl">☰</button>
+                <h1 class="text-xl font-semibold">Student Dashboard</h1>
+                <div class="flex items-center gap-4">
+                    <input type="text" placeholder="Search..." class="border rounded-lg px-3 py-1 w-40 md:w-64">
+                    <img src="https://picsum.photos/300/300" class="rounded-full w-10 h-10 object-cover">
+                </div>
+            </header>
+            <main class="p-6 bg-gray-100 max-h-screen space-y-6">
+
+                <section class="grid md:grid-cols-2 gap-6">
+
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h2 class="text-lg font-semibold mb-4">Grade Distribution</h2>
+                        <div class="w-full h-64">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h2 class="text-lg font-semibold mb-4">LeaderBoard</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full border">
+                                <thead class="bg-gray-200">
+                                    <tr>
+                                        <th class="px-4 py-2 border">Name</th>
+                                        <th class="px-4 py-2 border">Enrollment No</th>
+                                        <th class="px-4 py-2 border">results</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center hover:bg-gray-50">
+
+                                        <td class="border px-4 py-2">
+                                            <%= student.name %>
+                                        </td>
+
+                                        <td class="border px-4 py-2">
+                                            <%= student.enroll %>
+                                        </td>
+
+                                        <td
+                                            class="border px-4 py-2 font-semibold <%= latestResult && latestResult.resultStatus === 'Pass' ? 'text-green-600' : 'text-red-600' %>">
+                                            <%= latestResult && latestResult.resultStatus ? latestResult.resultStatus
+                                                : "Pending" %>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+
+                </section>
+                <section class="grid md:grid-cols-2 gap-6">
+
+
+                    <div class="bg-white p-3 rounded-xl shadow">
+                        <h2 class="text-lg font-semibold mb-4">Credits Progress</h2>
+                        <div class="w-full h-64">
+                            <canvas id="creditChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-xl shadow">
+                        <h2 class="text-lg font-semibold mb-4">Subject Marks</h2>
+                        <div class="w-full h-64">
+                            <canvas id="marksChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+            const resultsData = JSON.parse('<%- JSON.stringify(results || []) %>');
+            const latestResult = resultsData.length ? resultsData[resultsData.length - 1] : {};
+            const subjectMarks = latestResult.subjects || [];
+        </script>
+
+        <script>
+            const btnOpen = document.getElementById('menuBtn')
+            const btnClose = document.getElementById('closeBtn')
+            const slider = document.getElementById('sidebar')
+            if (btnOpen) {
+                btnOpen.addEventListener("click", () => {
+                    slider.classList.remove("-translate-x-full");
+                });
+            }
+
+            if (btnClose) {
+                btnClose.addEventListener("click", () => {
+                    slider.classList.add("-translate-x-full");
+                });
+            }
+
+            const ctx = document.getElementById('myChart');
+
+            if (ctx && subjectMarks.length > 0) {
+
+                const labels = subjectMarks.map(s => s.subject);
+                const marks = subjectMarks.map(s => s.marks);
+
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Marks Distribution',
+                            data: marks,
+                            backgroundColor: [
+                                '#4f46e5',
+                                '#10b981',
+                                '#f59e0b',
+                                '#ef4444',
+                                '#6366f1'
+                            ]
+                        }]
+                    }
+                });
+
+            }
+
+            const marksCtx = document.getElementById('marksChart');
+
+            if (marksCtx && subjectMarks.length > 0) {
+
+                const subjects = subjectMarks.map(s => s.subject);
+                const marks = subjectMarks.map(s => s.marks);
+
+                new Chart(marksCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: subjects,
+                        datasets: [{
+                            label: 'Marks',
+                            data: marks,
+                            backgroundColor: '#4f46e5'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+
+            }
+
+            const gpaCtx = document.getElementById("gpaChart");
+
+            if (gpaCtx && resultsData.length > 0) {
+
+                const sem = resultsData.map(r => "Sem " + r.sem);
+                const gpa = resultsData.map(r => r.CGPA);
+
+                new Chart(gpaCtx, {
+                    type: 'line',
+                    data: {
+                        labels: sem,
+                        datasets: [{
+                            label: 'GPA',
+                            data: gpa,
+                            borderColor: '#10b981',
+                            fill: false
+                        }]
+                    }
+                });
+            }
+            const statusCtx = document.getElementById("statusChart");
+
+            if (statusCtx) {
+
+                new Chart(statusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Pass', 'Fail'],
+                        datasets: [{
+                            data: [
+                                latestResult && latestResult.resultStatus === 'Pass' ? 1 : 0,
+                                latestResult && latestResult.resultStatus === 'Fail' ? 1 : 0
+                            ],
+                            backgroundColor: [
+                                '#10b981',
+                                '#ef4444'
+                            ]
+                        }]
+                    }
+                });
+
+            }
+
+            const creditCtx = document.getElementById("creditChart");
+
+            if (creditCtx) {
+
+                new Chart(creditCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Completed', 'Remaining'],
+                        datasets: [{
+                            data: [
+                                latestResult ? latestResult.creditsEarned : 0,
+                                160 - (latestResult ? latestResult.creditsEarned : 0)
+                            ],
+                            backgroundColor: [
+                                '#4f46e5',
+                                '#e5e7eb'
+                            ]
+                        }]
+                    }
+                });
+
+            }
+        </script>

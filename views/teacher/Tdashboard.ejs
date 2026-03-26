@@ -1,0 +1,146 @@
+<%- include('../include/_Thead') %>
+
+    <div class="flex-1">
+        <header class="flex justify-between items-center bg-white shadow p-4">
+            <button id="menuBtn" class="md:hidden text-2xl">☰</button>
+            <h1 class="text-xl font-semibold">Teacher Dashboard</h1>
+            <div class="flex items-center gap-4">
+                <input type="text" placeholder="Search student..." class="border rounded-lg px-3 py-1 w-40 md:w-64">
+
+                <img src="https://picsum.photos/200" class="rounded-full w-10 h-10 object-cover">
+            </div>
+        </header>
+
+
+
+        <main class="p-6 bg-gray-100 min-h-screen space-y-6">
+            <section class="grid md:grid-cols-4 gap-6">
+
+                <div class="bg-white p-5 rounded-xl shadow text-center">
+                    <p class="text-gray-500">Total Students</p>
+                    <h3 class="text-2xl font-bold text-blue-600">
+                        <%= totalStudents %>
+                    </h3>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow text-center">
+                    <p class="text-gray-500">Results Uploaded</p>
+                    <h3 class="text-2xl font-bold text-green-600">
+                        <%= totalResults %>
+                    </h3>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow text-center">
+                    <p class="text-gray-500">Pass Percentage</p>
+                    <h3 class="text-2xl font-bold text-purple-600">
+                        <%= passPercentage %>%
+                    </h3>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow text-center">
+                    <p class="text-gray-500">Top CGPA</p>
+                    <h3 class="text-2xl font-bold text-yellow-600">
+                        <%= topCGPA %>
+                    </h3>
+                </div>
+
+            </section>
+            <section class="grid md:grid-cols-2 gap-6">
+
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <h2 class="text-lg font-semibold mb-4">Class Performance</h2>
+                    <canvas id="performanceChart"></canvas>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <h2 class="text-lg font-semibold mb-4">Pass vs Fail</h2>
+                    <canvas id="resultChart"></canvas>
+                </div>
+            </section>
+
+            <section class="bg-white p-6 rounded-xl shadow">
+
+                <h2 class="text-lg font-semibold mb-4">Student Results</h2>
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full border">
+
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th class="px-4 py-2 border">Name</th>
+                                <th class="px-4 py-2 border">Enrollment</th>
+                                <th class="px-4 py-2 border">Semester</th>
+                                <th class="px-4 py-2 border">CGPA</th>
+                                <th class="px-4 py-2 border">Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <% students.forEach(s=> { %>
+
+                                <tr class="text-center hover:bg-gray-50">
+
+                                    <td class="border px-4 py-2">
+                                        <%= s.name %>
+                                    </td>
+
+                                    <td class="border px-4 py-2">
+                                        <%= s.enroll %>
+                                    </td>
+
+                                    <td class="border px-4 py-2">
+                                        <%= s.sem || "-" %>
+                                    </td>
+
+                                    <td class="border px-4 py-2">
+                                        <%= s.CGPA || "-" %>
+                                    </td>
+
+                                    <td class="border px-4 py-2 
+<%= s.resultStatus === " Pass" ? "text-green-600" : "text-red-600" %>">
+                                        <%= s.resultStatus || "Pending" %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const performanceData = JSON.parse('<%- JSON.stringify(performanceData || []) %>');
+        const labels = performanceData.map(s => s.subject);
+        const marks = performanceData.map(s => s.avgMarks);
+        new Chart(document.getElementById("performanceChart"), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Average Marks',
+                    data: marks,
+                    backgroundColor: '#4f46e5'
+                }]
+            }
+        });
+
+        const passCount = JSON.parse('<%= JSON.stringify(passCount) %>');
+        const failCount = JSON.parse('<%= JSON.stringify(failCount) %>');
+
+        new Chart(document.getElementById("resultChart"), {
+            type: 'doughnut',
+            data: {
+                labels: ['Pass', 'Fail'],
+                datasets: [{
+                    data: [passCount, failCount],
+                    backgroundColor: ['#10b981', '#ef4444']
+                }]
+            }
+
+        });
+    </script>
+
+    <%- include('../include/_Sfoot') %>

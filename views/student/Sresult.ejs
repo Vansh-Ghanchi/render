@@ -1,0 +1,98 @@
+<%- include('../include/_Shead') %>
+    <div class="flex-1">
+  
+        <header class="flex justify-between items-center bg-white shadow p-4">
+            <button id="menuBtn" class="md:hidden text-2xl">☰</button>
+            <h1 class="text-xl font-semibold">Student Results</h1>
+            <div class="flex items-center gap-4">
+                <input type="text" placeholder="Search..." class="border rounded-lg px-3 py-1 w-40 md:w-64">
+
+                <img src="https://picsum.photos/300/300" class="rounded-full w-10 h-10 object-cover">
+            </div>
+        </header>
+        <main class="p-6 bg-gray-100 min-h-screen space-y-6">
+
+            <section class="bg-white p-5 rounded-xl shadow">
+                <h2 class="text-lg font-semibold mb-4"> Semester : <%= result.sem %>
+                </h2>
+            </section>
+
+            <section class="bg-white p-5 rounded-xl shadow">
+                <h2 class="text-lg font-semibold mb-4">Subject Marks</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full border border-gray-200">
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th class="px-4 py-2 border">Subject</th>
+                                <th class="px-4 py-2 border">marks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(result && result.subjects){ %>
+                                <% result.subjects.forEach(sub=> { %>
+                                    <tr class="text-center hover:bg-gray-50">
+                                        <td class="border px-4 py-2">
+                                            <%= sub.subject %>
+                                        </td>
+                                        <td class="border px-4 py-2">
+                                            <%= sub.marks %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="4" class="text-center py-4 text-gray-500">
+                                                    Result not uploaded yet
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-xl shadow text-center">
+                    <p class="text-gray-500">Total</p>
+                    <h3 class="text-2xl font-bold text-blue-600">
+                        <%= result.total %>
+                    </h3>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow text-center">
+                    <p class="text-gray-500">Percentage</p>
+                    <h3 class="text-2xl font-bold text-green-600">
+                        <%= result.percentage %>
+                    </h3>
+                </div>
+            </section>
+            <section class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-xl shadow text-center">
+                    <p class="text-gray-500">Semester GPA</p>
+                    <h3 class="text-2xl font-bold text-blue-600">
+                        <%= result.CGPA %>
+                    </h3>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow text-center">
+                    <p class="text-gray-500">Credits Earned</p>
+                    <h3 class="text-2xl font-bold text-green-600">
+                        <%= result.creditsEarned %>
+                    </h3>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow text-center">
+                    <p class="text-gray-500">Result Status</p>
+                    <h3 class="text-2xl font-bold text-purple-600">
+                        <%= result.resultStatus %>
+                    </h3>
+                </div>
+            </section>
+
+            <section class="flex justify-end">
+                <a href="/download-result/<%= student._id %>"
+                    class="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700">
+                    Download Result
+                </a>
+            </section>
+        </main>
+    </div>
+
+    <%- include('../include/_Sfoot') %>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="flex min-h-screen">
+        <!-- sidebar -->
+        <aside id="sidebar"
+            class="fixed md:static -transform -translate-x-full bg-gray-700  text-white md:translate-x-0  w-64 transition-transform-duration-300">
+            <button id="closeBtn" class="md:hidden p-4 text-xl">
+                ✕
+            </button>
+            <h1 class="text-center font-bold text-xl">SMS Portal </h1>
+            <nav class="space-y-3">
+                <a href="/Tdashboard" class="block hover:text-indigo-400 p-2 pt-5 pl-5">Dashboard</a>
+                <a href="/result" class="block hover:text-indigo-400 p-2 pl-5">result upload</a>
+                <a href="/Tprofile" class="block hover:text-indigo-400 p-2 pl-5">profile</a>
+            </nav>
+        </aside>

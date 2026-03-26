@@ -1,0 +1,50 @@
+<%- include('../include/_Thead') %>
+    <div class="flex-1">
+        <header class="flex justify-between items-center bg-white shadow p-4">
+            <button id="menuBtn" class="md:hidden text-2xl">☰</button>
+            <h1 class="text-xl font-semibold">Teacher Dashboard</h1>
+            <div class="flex items-center gap-4">
+                <input type="text" placeholder="Search..." class="border rounded-lg px-3 py-1 w-40 md:w-64">
+                <img src="https://picsum.photos/300/300" class="rounded-full w-10 h-10 object-cover">
+            </div>
+        </header>
+        <main class="p-6 bg-gray-100 min-h-screen space-y-6">
+            <section class="bg-white p-5 rounded-xl shadow">
+
+                <h2 class="text-lg font-semibold mb-4">Upload Result CSV</h2>
+
+                <form action="/uploadResults" method="POST" enctype="multipart/form-data">
+
+                    <input type="file" name="file" accept=".csv" class="border p-2 rounded-lg" required>
+
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 ml-2">
+
+                        Import CSV
+
+                    </button>
+
+                </form>
+
+            </section>
+
+             <section class="bg-white p-5 rounded-xl shadow">
+
+                <h2 class="text-lg font-semibold mb-4">Upload Student data</h2>
+
+                <form action="/uploadStudent" method="POST" enctype="multipart/form-data">
+
+                    <input type="file" name="file" accept=".csv" class="border p-2 rounded-lg" required>
+
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 ml-2">
+
+                        Import CSV
+
+                    </button>
+
+                </form>
+
+            </section>
+        </main>
+    </div>
+
+    <%- include('../include/_Sfoot') %>

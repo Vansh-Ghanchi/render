@@ -1,0 +1,16 @@
+</body>
+<script>
+    const btnOpen = document.getElementById('menuBtn')
+    const btnClose = document.getElementById('closeBtn')
+    const slider = document.getElementById('sidebar')
+
+    btnOpen.addEventListener("click", () => {
+        slider.classList.remove("-translate-x-full");
+    })
+    btnClose.addEventListener("click", () => {
+        slider.classList.add("-translate-x-full");
+    })
+
+</script>
+
+</html>
