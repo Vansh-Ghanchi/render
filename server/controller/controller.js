@@ -517,7 +517,8 @@ exports.chatt = async (req, res) => {
         const email = req.user.email
         const student = await Student.findOne({ email })
 
-        const response = await axios.post('http://127.0.0.1:8000/chatt', {
+        const chatbotBaseUrl = process.env.CHATBOT_URL || 'http://127.0.0.1:8000';
+        const response = await axios.post(`${chatbotBaseUrl}/chatt`, {
             message: req.body.message,
             student_id: student._id.toString()
         })
@@ -534,7 +535,8 @@ exports.tchatt = async (req, res) => {
         const email = req.user.email
         const teacher = await Teacher.findOne({ email })
 
-        const response = await axios.post('http://127.0.0.1:8000/tchatt', {
+        const chatbotBaseUrl = process.env.CHATBOT_URL || 'http://127.0.0.1:8000';
+        const response = await axios.post(`${chatbotBaseUrl}/tchatt`, {
             message: req.body.message,
             teacher_id: teacher._id.toString()
         })

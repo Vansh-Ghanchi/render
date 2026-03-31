@@ -49,7 +49,7 @@ class ChatRequest(BaseModel):
     student_id: str
     
 
-mongo = motor.motor_asyncio.AsyncIOMotorClient("mongodb://localhost:27017")
+mongo = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("MONGODB_URI", "mongodb://localhost:27017"))
 db = mongo["student_mgm2"]
 
 @app.post("/chatt")

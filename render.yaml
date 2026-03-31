@@ -1,0 +1,32 @@
+services:
+  # 1. Main Web Application (Node.js)
+  - type: web
+    name: sms-web-app
+    runtime: node
+    buildCommand: npm install
+    startCommand: node Server.js
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CHATBOT_URL
+        fromService:
+          name: sms-chatbot
+          type: web
+          property: host
+
+  # 2. AI Chatbot Service (Python FastAPI)
+  - type: web
+    name: sms-chatbot
+    runtime: python
+    rootDir: chatbot
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn chatbot:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
