@@ -9,8 +9,9 @@ collection = chromadb_client.get_or_create_collection("course_materials")
 def load_all_docs(folder="./docs"):
 
     existing = collection.get()
-    if existing["ids"]:
-        collection.delete(ids=existing["ids"])
+    if existing["ids"] and len(existing["ids"]) > 0:
+        print("Documents already exist in collection. Skipping re-Indexing.")
+        return
 
     for filename in os.listdir(folder):
         if not filename.endswith(".txt"):

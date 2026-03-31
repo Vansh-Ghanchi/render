@@ -39,7 +39,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+def home():
+    return {"status": "ok", "message": "FastAPI is running!"}
 
+@app.get("/healthz")
+def healthz():
+    return {"status": "healthy"}
 
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
