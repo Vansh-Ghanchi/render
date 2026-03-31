@@ -48,21 +48,30 @@ def healthz():
     return {"status": "healthy"}
 
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+# Initialization
+try:
+    GROQ_KEY = os.getenv("GROQ_API_KEY")
+    client = Groq(api_key=GROQ_KEY) if GROQ_KEY else None
+    
+    MONGO_URL = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
+    mongo = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
+    db = mongo["student_mgm2"]
+    print("✓ Backend Services Initialized")
+except Exception as e:
+    print(f"⚠ Initialization Warning: {e}")
+    client = None
+    db = None
 
 class ChatRequest(BaseModel):
     message: str
     student_id: str
     
-
-mongo = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("MONGODB_URI", "mongodb://localhost:27017"))
-db = mongo["student_mgm2"]
-
 @app.post("/chatt")
 async def chat_userquery(query: ChatRequest):
-    
+    if not client or not db:
+        return {"reply": "API Error: Background services not initialized properly."}
+
     student_doc = await db.students.find_one({"_id": ObjectId(query.student_id)})
-    # result_doc = await db.results.find_one({"student_id": ObjectId(query.student_id)})
     result_doc = await db.results.find_one({"studentId": ObjectId(query.student_id)})
     try:
         if not student_doc:

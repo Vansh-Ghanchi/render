@@ -2,12 +2,24 @@ import os
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
-chromadb_client = chromadb.PersistentClient(path="./chroma_store")
-collection = chromadb_client.get_or_create_collection("course_materials")
+_model = None
+_collection = None
+
+def get_model():
+    global _model
+    if _model is None:
+        _model = SentenceTransformer('all-MiniLM-L6-v2')
+    return _model
+
+def get_collection():
+    global _collection
+    if _collection is None:
+        client = chromadb.PersistentClient(path="./chroma_store")
+        _collection = client.get_or_create_collection("course_materials")
+    return _collection
 
 def load_all_docs(folder="./docs"):
-
+    collection = get_collection()
     existing = collection.get()
     if existing["ids"] and len(existing["ids"]) > 0:
         print("Documents already exist in collection. Skipping re-Indexing.")
@@ -26,6 +38,8 @@ def load_all_docs(folder="./docs"):
             chunk = text[i : i+400]
             chunks.append(chunk)
             i += 400
+        
+        model = get_model()
         embeddings = model.encode(chunks).tolist()
         collection.add(
             documents=chunks,
@@ -36,8 +50,10 @@ def load_all_docs(folder="./docs"):
 
 
 def retrieve(query: str, n=3) -> str:
+    model = get_model()
+    collection = get_collection()
     query_emb = model.encode([query]).tolist()
     results = collection.query(query_embeddings=query_emb, n_results=n)
-    if not results["documents"][0]:
+    if not results or not results["documents"] or not results["documents"][0]:
         return ""
     return "\n\n".join(results["documents"][0])
